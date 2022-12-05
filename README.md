@@ -1,4 +1,12 @@
-### Hi there 👋
+### To Whoever may read this:
+
+This is a public use repository that I will add from my own experiences dealing primarily with scripting implementations in IBM Maximo.
+
+Feel free to take  a look and tweak what is here for your own projects.
+
+I hope to grow this and make it a good source of more niche automation script options.
+
+Thanks!
 
 <!--
 **kylebaumgarten/kylebaumgarten** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
