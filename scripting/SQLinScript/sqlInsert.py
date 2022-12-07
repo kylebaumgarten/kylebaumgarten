@@ -49,6 +49,7 @@ if not expset.isEmpty(): #Important to verify so no runtime errors occur
 			prset.setWhere("PRNUM= 'PR"+str(custfield2)+"'")#Hypothetical example of what is possible
 			
 			vendornum=prset.getMbo(0).getString("VENDOR")
+			sheetnam=custfield1+" Example"
 			
 			try:
 
@@ -57,8 +58,8 @@ if not expset.isEmpty(): #Important to verify so no runtime errors occur
 				statexec = dbconnect.createStatement() #Create a sql statement with connection key
 
 
-				loc="INSERT INTO CUST_INTERFACE2(TRANSID, TRANSSEQ, DIFF_FIELD1, DIFF_FIELD2, DIFF_FIELD3, SHEET_ID, SHEET_NAME) \
-					 Values("+curdatecomb+", 1, '"+custfield1+"',"+custfield2+","+custfield3",'"+sheetid+"','"+sheetnam+"');"
+				loc="INSERT INTO CUST_INTERFACE2(TRANSID, TRANSSEQ, DIFF_FIELD1, DIFF_FIELD2, DIFF_FIELD3, VEND_NUM, SHEET_NAME) \
+					 Values("+curdatecomb+", 1, '"+custfield1+"',"+custfield2+","+custfield3",'"+vendornum+"','"+sheetnam+"');"
 
 				rs = statexec.execute(loc)
 				dbconnect.commit()
