@@ -1,6 +1,6 @@
 ### To Whoever may read this:
 
-This is a public use repository that I will add from my own experiences dealing primarily with scripting implementations in IBM Maximo.
+This is a public use repository that I will add from my own experiences dealing primarily with scripting in IBM Maximo.
 
 Feel free to take  a look and tweak what is here for your own projects.
 
