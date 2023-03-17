@@ -19,62 +19,84 @@ if not expset.isEmpty(): #Important to verify so no runtime errors occur
 		conKey = ""
 		dbconnect = ""
 		statexec = ""
-		
-		if custfield1=="Invoices"
+		try:	
+			if custfield1=="Invoices":
 
-			try: #You could probably make this a function if they do not differ much in what gets added, but sometimes manually specifying follows KISS principles better
+				try: #You could probably make this a function if they do not differ much in what gets added, but sometimes manually specifying follows KISS principles better
 
-				conKey = custset.getUserInfo().getConnectionKey(); #Grab connection key from mboset to connect to database
-				dbconnect = custset.getMboServer().getDBConnection(conKey) #Connect to database with key
-				statexec = dbconnect.createStatement() #Create a sql statement with connection key
+					conKey = custset.getUserInfo().getConnectionKey(); #Grab connection key from mboset to connect to database
+					dbconnect = custset.getMboServer().getDBConnection(conKey) #Connect to database with key
+					statexec = dbconnect.createStatement() #Create a sql statement with connection key
 
 
-				loc="INSERT INTO CUST_INTERFACE1(TRANSID, TRANSSEQ, DIFF_FIELD1, DIFF_FIELD2, DIFF_FIELD3) \
-					 Values("+curdatecomb+", 1, '"+custfield1+"',"+custfield2+","+custfield3");"
+					loc="INSERT INTO CUST_INTERFACE1(TRANSID, TRANSSEQ, DIFF_FIELD1, DIFF_FIELD2, DIFF_FIELD3) \
+						 Values("+curdatecomb+", 1, '"+custfield1+"',"+custfield2+","+custfield3");"
 
-				rs = statexec.execute(loc)
-				dbconnect.commit()
+					rs = statexec.execute(loc)
+					dbconnect.commit()
 
-			finally:
-				if statexec != "":
-					statexec.close()
-				if conKey != "" and dbconnect != "":
-					custset.getMboServer().freeDBConnection(conKey)
-					
-		elif custfield1=="PurchaseReqs": 
-			#This makes the statement more narrow on the band it will insert with. Can be replaced with an else statement if certain all data types will work like this
-			#Can also expand this to many more interface tables if necessary
-			
-			prset=MXServer.getMXServer().getMboSet("PR", userInfo)
-			prset.setWhere("PRNUM= 'PR"+str(custfield2)+"'")#Hypothetical example of what is possible
-			
-			vendornum=prset.getMbo(0).getString("VENDOR")
-			sheetnam=custfield1+" Example"
-			
+				finally:
+					if statexec != "":
+						statexec.close()
+					if conKey != "" and dbconnect != "":
+						custset.getMboServer().freeDBConnection(conKey)
+
+			elif custfield1=="PurchaseReqs": 
+				#This makes the statement more narrow on the band it will insert with. Can be replaced with an else statement if certain all data types will work like this
+				#Can also expand this to many more interface tables if necessary
+
+				prset=MXServer.getMXServer().getMboSet("PR", userInfo)
+				prset.setWhere("PRNUM= 'PR"+str(custfield2)+"'")#Hypothetical example of what is possible
+
+				vendornum=prset.getMbo(0).getString("VENDOR")
+				sheetnam=custfield1+" Example"
+
+				try:
+
+					conKey = prset.getUserInfo().getConnectionKey(); #Grab connection key from mboset to connect to database
+					dbconnect = prset.getMboServer().getDBConnection(conKey) #Connect to database with key
+					statexec = dbconnect.createStatement() #Create a sql statement with connection key
+
+
+					loc="INSERT INTO CUST_INTERFACE2(TRANSID, TRANSSEQ, DIFF_FIELD1, DIFF_FIELD2, DIFF_FIELD3, VEND_NUM, SHEET_NAME) \
+						 Values("+curdatecomb+", 1, '"+custfield1+"',"+custfield2+","+custfield3",'"+vendornum+"','"+sheetnam+"');"
+
+					rs = statexec.execute(loc)
+					dbconnect.commit()
+
+				finally:
+					if statexec != "":
+						statexec.close()
+					if conKey != "" and dbconnect != "":
+						prset.getMboServer().freeDBConnection(conKey)
+
+				prset.reset()
+				prset.close()
+				prset.cleanup()
+		except:
+			print("An error occured on record custfield1:"+custfield1)
+			with open("/MeaGlobalDirs/in/ERROR/interfaceErr.txt", "a") as myfile:
+				myfile.write("\nError on Integration ID: "+custfield1)
+		finally:
+			conKey2 = ""
+			con2 = ""
+			s2 = ""
 			try:
+				conKey2 = custset.getUserInfo().getConnectionKey();
+				con2 = custset.getMboServer().getDBConnection(conKey2)
+				s2 = con2.createStatement()
 
-				conKey = prset.getUserInfo().getConnectionKey(); #Grab connection key from mboset to connect to database
-				dbconnect = prset.getMboServer().getDBConnection(conKey) #Connect to database with key
-				statexec = dbconnect.createStatement() #Create a sql statement with connection key
+				loc2="UPDATE SYR_INVOICEDEC SET PROCESSED=1 WHERE PROCESSED=0 and SYR_INVOICEDECCID ="+invid
 
 
-				loc="INSERT INTO CUST_INTERFACE2(TRANSID, TRANSSEQ, DIFF_FIELD1, DIFF_FIELD2, DIFF_FIELD3, VEND_NUM, SHEET_NAME) \
-					 Values("+curdatecomb+", 1, '"+custfield1+"',"+custfield2+","+custfield3",'"+vendornum+"','"+sheetnam+"');"
-
-				rs = statexec.execute(loc)
-				dbconnect.commit()
+				rs2 = s2.execute(loc2)
+				con2.commit()
 
 			finally:
-				if statexec != "":
-					statexec.close()
-				if conKey != "" and dbconnect != "":
-					prset.getMboServer().freeDBConnection(conKey)
-					
-			prset.reset()
-			prset.close()
-			prset.cleanup()
-			
-		custobjs.setValue("PROCESSED",1, MboConstants.NOACCESSCHECK | MboConstants.NOACTION | MboConstants.NOVALIDATION)
+				if s2 != "":
+					s2.close()
+				if conKey2 != "" and con2 != "":
+					custset.getMboServer().freeDBConnection(conKey2)
 		
 	custset.save()
 custset.reset()
