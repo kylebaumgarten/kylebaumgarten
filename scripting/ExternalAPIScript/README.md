@@ -6,3 +6,6 @@ In the code linked, we will use a simple api call that will return either a 0 or
 
 The reason for this is to show effectively how it works at a base level and allow for future customization from others.
 
+The format of this call to then make will then look something like:
+
+https://HOSTURL/api/script/SCRIPTNAME?&response=1&apikey=APIKEYGOESHERE&id=SR106001
