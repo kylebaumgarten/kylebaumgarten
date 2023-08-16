@@ -1,3 +1,4 @@
+#!/bin/python
 import json, requests, zipfile, io, os
 maximourl=os.getenv('maxurl')
 maximoos=os.getenv('mobileobjstruc')
